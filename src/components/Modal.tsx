@@ -1,0 +1,54 @@
+import { useEffect, type ReactNode } from 'react';
+import { X } from 'lucide-react';
+
+type ModalProps = {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+};
+
+export default function Modal({ title, onClose, children }: ModalProps) {
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        aria-label="Close"
+        onClick={onClose}
+        className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        className="relative w-full max-w-lg animate-pop-in border-2 border-primary-900 bg-surface"
+      >
+        <div className="flex items-center justify-between border-b-2 border-primary-900 px-6 py-4">
+          <h2 id="modal-title" className="text-3xl text-primary-900">
+            {title}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close dialog"
+            className="flex h-9 w-9 items-center justify-center text-primary-600 transition-colors hover:bg-primary-100 hover:text-primary-900"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="px-6 py-6">{children}</div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,2 @@
+[functions.import-youtube]
+verify_jwt = false
