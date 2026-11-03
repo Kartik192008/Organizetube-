@@ -5,14 +5,19 @@ import DashboardView from '@/components/DashboardView';
 import ErrorNotice from '@/components/ErrorNotice';
 import Header from '@/components/Header';
 import LessonWatchView from '@/components/LessonWatchView';
+import LoginView from '@/components/LoginView';
 import { useLibrary } from '@/hooks/useLibrary';
+import { useAuth } from '@/hooks/useAuth';
 import { computeStats, courseProgress, groupLessonsByCourse } from '@/lib/stats';
 
 export default function App() {
+  const { status: authStatus, user, signInWithGoogle, signOut } = useAuth();
   const { status, data, error, refresh } = useLibrary();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+
+  const userId = user?.id ?? null;
 
   const derived = useMemo(() => {
     if (!data) return null;
@@ -51,9 +56,28 @@ export default function App() {
     ? (derived?.lessonsByCourse.get(selectedCourse.id) ?? [])
     : [];
 
+  if (authStatus === 'loading') {
+    return (
+      <div className="flex items-center justify-center gap-3 py-32 text-primary-500">
+        <Loader2 className="h-5 w-5 animate-spin" />
+        <span className="text-sm font-semibold">Signing in...</span>
+      </div>
+    );
+  }
+
+  if (authStatus === 'unauthenticated') {
+    return <LoginView signInWithGoogle={signInWithGoogle} />;
+  }
+
   return (
     <div className="min-h-screen bg-surface">
-      <Header query={query} onQueryChange={handleQueryChange} onHome={goHome} />
+      <Header
+        query={query}
+        onQueryChange={handleQueryChange}
+        onHome={goHome}
+        user={user}
+        onSignOut={signOut}
+      />
 
       <main className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         {status === 'loading' && (
@@ -112,6 +136,7 @@ export default function App() {
             stats={derived.stats}
             onOpenCourse={setSelectedId}
             onCourseSaved={refresh}
+            userId={userId}
           />
         )}
       </main>

@@ -2,6 +2,7 @@ export type SourceKind = 'video' | 'playlist';
 
 export type CourseRow = {
   id: string;
+  user_id: string | null;
   title: string;
   source_url: string;
   source_kind: SourceKind;
@@ -11,6 +12,7 @@ export type CourseRow = {
 
 export type LessonRow = {
   id: string;
+  user_id: string | null;
   course_id: string;
   youtube_id: string;
   title: string;
@@ -23,6 +25,7 @@ export type LessonRow = {
 
 export type StudySessionRow = {
   id: string;
+  user_id: string | null;
   course_id: string;
   lesson_id: string | null;
   minutes: number;

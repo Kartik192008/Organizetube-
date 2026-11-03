@@ -14,6 +14,7 @@ type DashboardViewProps = {
   stats: LibraryStats;
   onOpenCourse: (courseId: string) => void;
   onCourseSaved: () => Promise<void>;
+  userId: string | null;
 };
 
 export default function DashboardView({
@@ -23,6 +24,7 @@ export default function DashboardView({
   stats,
   onOpenCourse,
   onCourseSaved,
+  userId,
 }: DashboardViewProps) {
   const [addOpen, setAddOpen] = useState(false);
 
@@ -75,7 +77,13 @@ export default function DashboardView({
 
       <DonationSection />
 
-      {addOpen && <AddCourseModal onClose={() => setAddOpen(false)} onSaved={handleSaved} />}
+      {addOpen && (
+        <AddCourseModal
+          onClose={() => setAddOpen(false)}
+          onSaved={handleSaved}
+          userId={userId}
+        />
+      )}
     </div>
   );
 }

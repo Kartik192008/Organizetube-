@@ -10,11 +10,12 @@ import type { ImportResult } from '@/types/library';
 type AddCourseModalProps = {
   onClose: () => void;
   onSaved: () => void;
+  userId: string | null;
 };
 
 const PREVIEW_LIMIT = 5;
 
-export default function AddCourseModal({ onClose, onSaved }: AddCourseModalProps) {
+export default function AddCourseModal({ onClose, onSaved, userId }: AddCourseModalProps) {
   const [url, setUrl] = useState('');
   const [preview, setPreview] = useState<{ source: string; result: ImportResult } | null>(null);
   const [busy, setBusy] = useState<'finding' | 'saving' | null>(null);
@@ -41,7 +42,7 @@ export default function AddCourseModal({ onClose, onSaved }: AddCourseModalProps
     setBusy('saving');
     setError(null);
     try {
-      await saveImportedCourse(preview.source, preview.result);
+      await saveImportedCourse(preview.source, preview.result, userId ?? '');
       onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');

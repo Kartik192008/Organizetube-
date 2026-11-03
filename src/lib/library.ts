@@ -26,7 +26,7 @@ export async function fetchLibrary(): Promise<Library> {
   };
 }
 
-export async function saveImportedCourse(source: string, result: ImportResult): Promise<void> {
+export async function saveImportedCourse(source: string, result: ImportResult, userId: string): Promise<void> {
   const { data: course, error: courseError } = await supabase
     .from('courses')
     .insert({
@@ -34,6 +34,7 @@ export async function saveImportedCourse(source: string, result: ImportResult): 
       source_url: source,
       source_kind: result.kind,
       thumbnail_url: result.thumbnailUrl,
+      user_id: userId,
     })
     .select('id')
     .single();
@@ -43,6 +44,7 @@ export async function saveImportedCourse(source: string, result: ImportResult): 
   const { error: lessonsError } = await supabase.from('lessons').insert(
     result.lessons.map((lesson, index) => ({
       course_id: course.id,
+      user_id: userId,
       youtube_id: lesson.youtubeId,
       title: lesson.title,
       position: index,
@@ -99,7 +101,6 @@ async function logStudyTime(lesson: LessonRow, seconds: number): Promise<void> {
   });
   if (error) throw new Error('Could not log your study time. Please try again.');
 }
-
 
 export async function reopenLesson(lesson: LessonRow): Promise<void> {
   const { error } = await supabase
