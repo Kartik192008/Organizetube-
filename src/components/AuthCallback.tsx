@@ -8,9 +8,9 @@ export default function AuthCallback() {
   useEffect(() => {
     const completeAuth = async () => {
       try {
-        const { error: supabaseError } = await supabase.auth.exchangeCodeForSession(
-          window.location.search,
-        );
+        // Supabase v2 uses PKCE by default; pass both search and hash
+        const fullUrl = `${window.location.search}${window.location.hash}`;
+        const { error: supabaseError } = await supabase.auth.exchangeCodeForSession(fullUrl);
         if (supabaseError) throw supabaseError;
         window.location.replace('/');
       } catch (err) {
