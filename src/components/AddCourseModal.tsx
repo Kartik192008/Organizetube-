@@ -123,7 +123,7 @@ export default function AddCourseModal({ onClose, onSaved, userId }: AddCourseMo
 
           {error && <ErrorNotice message={error} />}
 
-          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between sticky bottom-0 bg-surface pt-4 -mx-6 px-6 -mb-6 pb-6 border-t border-primary-200">
             <button
               type="button"
               onClick={() => {

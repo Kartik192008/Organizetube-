@@ -151,7 +151,7 @@ export default function CourseDetailView({
           <p className="text-sm text-primary-500">Select a video to watch it here</p>
         </div>
 
-        <ol className="divide-y divide-primary-200 border-2 border-primary-900">
+        <ol className="divide-y divide-primary-200 border-2 border-primary-900 max-h-[60vh] overflow-y-auto">
           {lessons.map((lesson, index) => {
             const isNext = lesson.id === nextUpId;
             const isBusy = busyLessonId === lesson.id;

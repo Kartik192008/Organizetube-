@@ -33,7 +33,7 @@ export default function Modal({ title, onClose, children }: ModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative z-[100000] w-full max-w-lg my-8 animate-pop-in border-2 border-primary-900 bg-surface shadow-2xl"
+        className="relative z-[100000] w-full max-w-lg max-h-[85vh] flex flex-col my-8 animate-pop-in border-2 border-primary-900 bg-surface shadow-2xl"
       >
         <div className="flex items-center justify-between border-b-2 border-primary-900 px-6 py-4">
           <h2 id="modal-title" className="text-3xl text-primary-900">
@@ -48,7 +48,7 @@ export default function Modal({ title, onClose, children }: ModalProps) {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="px-6 py-6">{children}</div>
+        <div className="px-6 py-6 overflow-y-auto flex-1 min-h-0">{children}</div>
       </div>
     </div>
   );
