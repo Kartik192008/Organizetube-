@@ -103,22 +103,46 @@ async function importVideo(id: string): Promise<ImportResult> {
 // continuation responses. Each block carries its video ID and its title.
 function extractLockupVideos(text: string): Lesson[] {
   const found: Lesson[] = [];
-  const blocks = text.split('"lockupViewModel":{').slice(1);
-  for (const block of blocks) {
-    const head = block;
-    const idMatch = head.match(/"contentId":"([\w-]{11})"/);
-    const titleMatch = head.match(/"lockupMetadataViewModel":\{"title":\{"content":"((?:[^"\\]|\\.)*)"/);
-    if (!idMatch) continue;
-    found.push({
-      youtubeId: idMatch[1],
-      title: titleMatch ? decodeJsonString(titleMatch[1]).trim() || "Untitled video" : "Untitled video",
-    });
+  // Try multiple patterns for different YouTube layouts
+  const patterns = [
+    /"lockupViewModel":\{.*?"contentId":"([\w-]{11})".*?"lockupMetadataViewModel":\{"title":\{"content":"((?:[^"\\]|\\.)*)"/gs,
+    /"videoId":"([\w-]{11})".*?"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/gs,
+    /"videoId":"([\w-]{11})","title":\{"simpleText":"((?:[^"\\]|\\.)*)"/gs,
+  ];
+  
+  for (const pattern of patterns) {
+    const matches = [...text.matchAll(pattern)];
+    for (const match of matches) {
+      found.push({
+        youtubeId: match[1],
+        title: match[2] ? decodeJsonString(match[2]).trim() || "Untitled video" : "Untitled video",
+      });
+    }
   }
+  
+  // Fallback: look for videoRenderer
+  if (found.length === 0) {
+    const blocks = text.split('"videoRenderer":{').slice(1);
+    for (const block of blocks) {
+      const idMatch = block.match(/"videoId":"([\w-]{11})"/);
+      const titleMatch = block.match(/"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/);
+      if (!idMatch) continue;
+      found.push({
+        youtubeId: idMatch[1],
+        title: titleMatch ? decodeJsonString(titleMatch[1]).trim() || "Untitled video" : "Untitled video",
+      });
+    }
+  }
+  
   return found;
 }
 
 function findContinuationToken(text: string): string | null {
-  const matches = [...text.matchAll(/"continuationCommand":\{"token":"((?:[^"\\]|\\.)*)"/g)];
+  const matches = [
+    ...text.matchAll(/"continuationCommand":\{"token":"((?:[^"\\]|\\.)*)"/g),
+    ...text.matchAll(/"nextContinuationData":\{"continuation":"((?:[^"\\]|\\.)*)"/g),
+    ...text.matchAll(/continuation":"((?:[^"\\]|\\.)*)"/g),
+  ];
   return matches.length > 0 ? matches[matches.length - 1][1] : null;
 }
 
@@ -168,6 +192,17 @@ async function importPlaylist(id: string): Promise<ImportResult> {
     addAll(extractLockupVideos(pageText));
     if (lessons.length === before) break;
     token = findContinuationToken(pageText);
+  }
+
+  if (lessons.length === 0) {
+    // Try alternative approach: fetch with different headers
+    const res2 = await fetch(`https://www.youtube.com/playlist?list=${id}&hl=en`, {
+      headers: { "User-Agent": BROWSER_USER_AGENT, "Accept-Language": "en-US,en;q=0.9" },
+    });
+    if (res2.ok) {
+      const html2 = await res2.text();
+      addAll(extractLockupVideos(html2));
+    }
   }
 
   if (lessons.length === 0) {
