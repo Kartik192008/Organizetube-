@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import AuthCallback from '@/components/AuthCallback';
+import CalendarView from '@/components/CalendarView';
 import CourseDetailView from '@/components/CourseDetailView';
 import DashboardView from '@/components/DashboardView';
 import ErrorNotice from '@/components/ErrorNotice';
@@ -17,6 +18,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const [view, setView] = useState<'dashboard' | 'calendar'>('dashboard');
 
   const userId = user?.id ?? null;
 
@@ -46,6 +48,13 @@ export default function App() {
   const goHome = () => {
     setSelectedId(null);
     setSelectedLessonId(null);
+    setView('dashboard');
+  };
+
+  const goCalendar = () => {
+    setSelectedId(null);
+    setSelectedLessonId(null);
+    setView('calendar');
   };
 
   const handleQueryChange = (value: string) => {
@@ -80,69 +89,76 @@ export default function App() {
         query={query}
         onQueryChange={handleQueryChange}
         onHome={goHome}
+        onCalendar={goCalendar}
         user={user}
         onSignOut={signOut}
       />
 
       <main className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        {status === 'loading' && (
-          <div className="flex items-center justify-center gap-3 py-32 text-primary-500">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="text-sm font-semibold">Loading your library...</span>
-          </div>
-        )}
+        {view === 'calendar' ? (
+          <CalendarView userId={userId} onBack={goHome} />
+        ) : (
+          <>
+            {status === 'loading' && (
+              <div className="flex items-center justify-center gap-3 py-32 text-primary-500">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm font-semibold">Loading your library...</span>
+              </div>
+            )}
 
-        {status === 'error' && (
-          <div className="mx-auto flex max-w-xl flex-col gap-4 py-24">
-            <ErrorNotice message={`We could not load your library. ${error}`} />
-            <button
-              type="button"
-              onClick={refresh}
-              className="h-11 w-fit border-2 border-primary-900 px-5 text-sm font-semibold text-primary-900 transition-colors hover:bg-primary-900 hover:text-surface"
-            >
-              Try again
-            </button>
-          </div>
-        )}
+            {status === 'error' && (
+              <div className="mx-auto flex max-w-xl flex-col gap-4 py-24">
+                <ErrorNotice message={`We could not load your library. ${error}`} />
+                <button
+                  type="button"
+                  onClick={refresh}
+                  className="h-11 w-fit border-2 border-primary-900 px-5 text-sm font-semibold text-primary-900 transition-colors hover:bg-primary-900 hover:text-surface"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
 
-        {status === 'ready' && data && derived && selectedCourse && selectedLessonId ? (
-          <LessonWatchView
-            key={selectedLessonId}
-            course={selectedCourse}
-            lessons={courseLessons}
-            lessonId={selectedLessonId}
-            onSelectLesson={setSelectedLessonId}
-            onBack={() => setSelectedLessonId(null)}
-            onChanged={refresh}
-          />
-        ) : null}
+            {status === 'ready' && data && derived && selectedCourse && selectedLessonId ? (
+              <LessonWatchView
+                key={selectedLessonId}
+                course={selectedCourse}
+                lessons={courseLessons}
+                lessonId={selectedLessonId}
+                onSelectLesson={setSelectedLessonId}
+                onBack={() => setSelectedLessonId(null)}
+                onChanged={refresh}
+              />
+            ) : null}
 
-        {status === 'ready' && data && derived && selectedCourse && !selectedLessonId ? (
-          <CourseDetailView
-            key={selectedCourse.id}
-            course={selectedCourse}
-            lessons={courseLessons}
-            progress={derived.progressByCourse.get(selectedCourse.id) ?? courseProgress([])}
-            onBack={goHome}
-            onWatch={setSelectedLessonId}
-            onChanged={refresh}
-            onDeleted={async () => {
-              goHome();
-              await refresh();
-            }}
-          />
-        ) : null}
+            {status === 'ready' && data && derived && selectedCourse && !selectedLessonId ? (
+              <CourseDetailView
+                key={selectedCourse.id}
+                course={selectedCourse}
+                lessons={courseLessons}
+                progress={derived.progressByCourse.get(selectedCourse.id) ?? courseProgress([])}
+                onBack={goHome}
+                onWatch={setSelectedLessonId}
+                onChanged={refresh}
+                onDeleted={async () => {
+                  goHome();
+                  await refresh();
+                }}
+              />
+            ) : null}
 
-        {status === 'ready' && data && derived && !selectedCourse && (
-          <DashboardView
-            courses={derived.courses}
-            totalCourses={data.courses.length}
-            progressByCourse={derived.progressByCourse}
-            stats={derived.stats}
-            onOpenCourse={setSelectedId}
-            onCourseSaved={refresh}
-            userId={userId}
-          />
+            {status === 'ready' && data && derived && !selectedCourse && (
+              <DashboardView
+                courses={derived.courses}
+                totalCourses={data.courses.length}
+                progressByCourse={derived.progressByCourse}
+                stats={derived.stats}
+                onOpenCourse={setSelectedId}
+                onCourseSaved={refresh}
+                userId={userId}
+              />
+            )}
+          </>
         )}
       </main>
     </div>

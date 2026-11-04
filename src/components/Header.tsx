@@ -1,4 +1,4 @@
-import { Search, LogOut } from 'lucide-react';
+import { Search, LogOut, Calendar } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 type HeaderProps = {
@@ -7,9 +7,10 @@ type HeaderProps = {
   onHome: () => void;
   user: { email?: string | null; user_metadata?: { full_name?: string | null; avatar_url?: string | null } } | null;
   onSignOut: () => void;
+  onCalendar: () => void;
 };
 
-export default function Header({ query, onQueryChange, onHome, user, onSignOut }: HeaderProps) {
+export default function Header({ query, onQueryChange, onHome, user, onSignOut, onCalendar }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-primary-200 bg-surface/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -33,6 +34,14 @@ export default function Header({ query, onQueryChange, onHome, user, onSignOut }
               className="border-b-2 border-accent-500 pb-1 text-sm font-semibold text-primary-900"
             >
               Dashboard
+            </button>
+            <button
+              type="button"
+              onClick={onCalendar}
+              className="flex items-center gap-1 text-sm font-semibold text-primary-600 transition-colors hover:text-primary-900"
+            >
+              <Calendar className="h-4 w-4" />
+              Calendar
             </button>
           </nav>
         </div>
