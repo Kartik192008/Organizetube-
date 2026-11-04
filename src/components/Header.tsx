@@ -20,7 +20,7 @@ export default function Header({ query, onQueryChange, onHome, user, onSignOut }
             className="group flex items-center gap-2 transition-opacity hover:opacity-80"
             aria-label="Organizer home"
           >
-            <img src="/logo.png" alt="Organizer" className="h-8 w-8 object-contain" />
+            <img src="/logo.png?v=2" alt="Organizer" className="h-8 w-8 object-contain" />
             <span className="font-display text-2xl leading-none text-primary-900">
               organizer
               <span className="text-accent-500">.</span>
