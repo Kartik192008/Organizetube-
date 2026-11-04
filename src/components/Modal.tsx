@@ -21,18 +21,18 @@ export default function Modal({ title, onClose, children }: ModalProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       <button
         type="button"
         aria-label="Close"
         onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/40"
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative w-full max-w-lg animate-pop-in border-2 border-primary-900 bg-surface"
+        className="relative z-[10000] w-full max-w-lg animate-pop-in border-2 border-primary-900 bg-surface"
       >
         <div className="flex items-center justify-between border-b-2 border-primary-900 px-6 py-4">
           <h2 id="modal-title" className="text-3xl text-primary-900">
