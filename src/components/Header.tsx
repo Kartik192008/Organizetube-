@@ -1,4 +1,4 @@
-import { Play, Search, LogOut } from 'lucide-react';
+import { Search, LogOut } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 type HeaderProps = {
@@ -20,9 +20,7 @@ export default function Header({ query, onQueryChange, onHome, user, onSignOut }
             className="group flex items-center gap-2 transition-opacity hover:opacity-80"
             aria-label="Organizer home"
           >
-            <span className="flex h-8 w-8 items-center justify-center bg-accent-500 text-white">
-              <Play className="h-4 w-4 fill-current" />
-            </span>
+            <img src="/logo.png" alt="Organizer" className="h-8 w-8 object-contain" />
             <span className="font-display text-2xl leading-none text-primary-900">
               organizer
               <span className="text-accent-500">.</span>

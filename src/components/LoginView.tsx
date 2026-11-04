@@ -9,9 +9,7 @@ export default function LoginView({ signInWithGitHub, signInWithGoogle }: LoginV
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4">
       <div className="max-w-md w-full flex flex-col items-center gap-8 p-8">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-500 text-white">
-          <Github className="h-8 w-8 fill-current" />
-        </div>
+        <img src="/logo.png" alt="Organizer" className="h-16 w-16 object-contain" />
 
         <div className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold text-primary-900">Welcome to Organizer</h1>
