@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import AuthCallback from '@/components/AuthCallback';
 import CourseDetailView from '@/components/CourseDetailView';
 import DashboardView from '@/components/DashboardView';
 import ErrorNotice from '@/components/ErrorNotice';
 import Header from '@/components/Header';
-import AuthCallback from '@/components/AuthCallback';
 import LessonWatchView from '@/components/LessonWatchView';
 import LoginView from '@/components/LoginView';
 import { useLibrary } from '@/hooks/useLibrary';
