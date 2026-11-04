@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { computeStats, courseProgress, groupLessonsByCourse } from '@/lib/stats';
 
 export default function App() {
-  const { status: authStatus, user, signInWithGitHub, signInWithGoogle, signOut } = useAuth();
+  const { status: authStatus, user, signInWithGitHub, signOut } = useAuth();
   const { status, data, error, refresh } = useLibrary();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
@@ -71,7 +71,7 @@ export default function App() {
   }
 
   if (authStatus === 'unauthenticated') {
-    return <LoginView signInWithGitHub={signInWithGitHub} signInWithGoogle={signInWithGoogle} />;
+    return <LoginView signInWithGitHub={signInWithGitHub} />;
   }
 
   return (
