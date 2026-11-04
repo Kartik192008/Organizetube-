@@ -105,17 +105,19 @@ function extractLockupVideos(text: string): Lesson[] {
   const found: Lesson[] = [];
   // Try multiple patterns for different YouTube layouts
   const patterns = [
-    /"lockupViewModel":\{.*?"contentId":"([\w-]{11})".*?"lockupMetadataViewModel":\{"title":\{"content":"((?:[^"\\]|\\.)*)"/gs,
     /"videoId":"([\w-]{11})".*?"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/gs,
     /"videoId":"([\w-]{11})","title":\{"simpleText":"((?:[^"\\]|\\.)*)"/gs,
+    /"contentId":"([\w-]{11})".*?"title":\{"content":"((?:[^"\\]|\\.)*)"/gs,
+    /"lockupViewModel":\{[^}]*?"contentId":"([\w-]{11})"[^}]*?"title":\{[^}]*?"content":"((?:[^"\\]|\\.)*)"/gs,
   ];
   
   for (const pattern of patterns) {
     const matches = [...text.matchAll(pattern)];
     for (const match of matches) {
+      const title = match[2] ? decodeJsonString(match[2]).trim().replace(/\\n/g, ' ') || "Untitled video" : "Untitled video";
       found.push({
         youtubeId: match[1],
-        title: match[2] ? decodeJsonString(match[2]).trim() || "Untitled video" : "Untitled video",
+        title,
       });
     }
   }
@@ -127,9 +129,25 @@ function extractLockupVideos(text: string): Lesson[] {
       const idMatch = block.match(/"videoId":"([\w-]{11})"/);
       const titleMatch = block.match(/"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/);
       if (!idMatch) continue;
+      const title = titleMatch ? decodeJsonString(titleMatch[1]).trim().replace(/\\n/g, ' ') || "Untitled video" : "Untitled video";
       found.push({
         youtubeId: idMatch[1],
-        title: titleMatch ? decodeJsonString(titleMatch[1]).trim() || "Untitled video" : "Untitled video",
+        title,
+      });
+    }
+  }
+  
+  // Another fallback: look for playlistVideoRenderer
+  if (found.length === 0) {
+    const blocks = text.split('"playlistVideoRenderer":{').slice(1);
+    for (const block of blocks) {
+      const idMatch = block.match(/"videoId":"([\w-]{11})"/);
+      const titleMatch = block.match(/"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/);
+      if (!idMatch) continue;
+      const title = titleMatch ? decodeJsonString(titleMatch[1]).trim().replace(/\\n/g, ' ') || "Untitled video" : "Untitled video";
+      found.push({
+        youtubeId: idMatch[1],
+        title,
       });
     }
   }
