@@ -39,9 +39,9 @@ export function useAuth() {
     };
   }, []);
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGitHub = useCallback(async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: 'github',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
@@ -56,7 +56,7 @@ export function useAuth() {
 
   return {
     ...state,
-    signInWithGoogle,
+    signInWithGitHub,
     signOut,
   };
 }
