@@ -14,7 +14,10 @@ export async function fetchNotes(): Promise<NoteRow[]> {
 export async function upsertNote(note_date: string, content: string, userId: string): Promise<NoteRow> {
   const { data, error } = await supabase
     .from('notes')
-    .upsert({ note_date, content, user_id: userId, updated_at: new Date().toISOString() }, { onConflict: 'user_id,note_date' })
+    .upsert(
+      { note_date, content, user_id: userId, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,note_date' },
+    )
     .select()
     .single();
   if (error) throw new Error(error.message);

@@ -155,7 +155,7 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write your notes for this day..."
-            className="w-full h-48 border-2 border-primary-200 p-3 text-sm text-primary-900 placeholder:text-primary-400 focus:border-primary-900 focus:outline-none resize-none"
+            className="w-full h-48 border-2 border-primary-200 p-3 text-sm text-primary-900 bg-surface placeholder:text-primary-400 focus:border-primary-900 focus:outline-none resize-none"
           />
           <div className="flex gap-2 mt-4">
             <button
