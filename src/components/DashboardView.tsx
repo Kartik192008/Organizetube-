@@ -63,15 +63,17 @@ export default function DashboardView({
           No courses match your search.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {courses.map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              progress={progressByCourse.get(course.id) ?? { completed: 0, total: 0, percent: 0 }}
-              onOpen={() => onOpenCourse(course.id)}
-            />
-          ))}
+        <div className="max-h-[600px] overflow-y-auto pr-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                progress={progressByCourse.get(course.id) ?? { completed: 0, total: 0, percent: 0 }}
+                onOpen={() => onOpenCourse(course.id)}
+              />
+            ))}
+          </div>
         </div>
       )}
 
