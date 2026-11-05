@@ -10,7 +10,7 @@ type CalendarViewProps = {
 
 export default function CalendarView({ userId, onBack }: CalendarViewProps) {
   const [notes, setNotes] = useState<NoteRow[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toLocaleDateString('en-CA'));
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +77,7 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
   const days = getDaysInMonth(currentMonth);
   const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
   const noteDates = new Set(notes.map((n) => n.note_date));
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA');
 
   return (
     <div className="animate-fade-up">

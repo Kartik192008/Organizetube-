@@ -35,7 +35,7 @@ export default function DashboardView({
     const loadTodayNote = async () => {
       try {
         const notes = await fetchNotes();
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
         const note = notes.find((n) => n.note_date === today);
         setTodayNote(note || null);
       } catch (err) {
@@ -57,9 +57,12 @@ export default function DashboardView({
       {todayNote && (
         <div className="mt-6 border-2 border-accent-500 bg-accent-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-wide text-accent-600 mb-1">
-            Today's Note
+            Today's Note — {new Date(todayNote.note_date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </div>
           <div className="text-sm text-primary-900 whitespace-pre-wrap">{todayNote.content}</div>
+          <div className="text-xs text-primary-500 mt-2">
+            {todayNote.updated_at && `Updated: ${new Date(todayNote.updated_at).toLocaleString()}`}
+          </div>
         </div>
       )}
 
