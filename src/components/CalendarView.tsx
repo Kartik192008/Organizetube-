@@ -151,9 +151,12 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
         </div>
 
         <div className="border-2 border-primary-900 p-6">
-          <h2 className="text-xl font-semibold text-primary-900 mb-4">
-            {new Date(selectedDate + 'T00:00:00').toLocaleDateString('default', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-          </h2>
+            <h2 className="text-xl font-semibold text-primary-900 mb-4">
+              {new Date(selectedDate + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+              <span className="block text-sm font-normal text-primary-500 mt-1">
+                {new Date().toLocaleTimeString()}
+              </span>
+            </h2>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
