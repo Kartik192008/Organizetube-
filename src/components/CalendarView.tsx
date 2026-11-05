@@ -13,6 +13,7 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
@@ -36,11 +37,12 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
   const handleSave = async () => {
     if (!userId) return;
     setSaving(true);
+    setError(null);
     try {
       await upsertNote(selectedDate, content.trim(), userId);
       await loadNotes();
     } catch (err) {
-      console.error(err);
+      setError(err instanceof Error ? err.message : 'Failed to save note');
     } finally {
       setSaving(false);
     }
@@ -49,12 +51,13 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
   const handleDelete = async () => {
     if (!selectedDate) return;
     setSaving(true);
+    setError(null);
     try {
       await deleteNote(selectedDate);
       setContent('');
       await loadNotes();
     } catch (err) {
-      console.error(err);
+      setError(err instanceof Error ? err.message : 'Failed to delete note');
     } finally {
       setSaving(false);
     }
@@ -157,6 +160,7 @@ export default function CalendarView({ userId, onBack }: CalendarViewProps) {
             placeholder="Write your notes for this day..."
             className="w-full h-48 border-2 border-primary-200 p-3 text-sm text-primary-900 bg-surface placeholder:text-primary-400 focus:border-primary-900 focus:outline-none resize-none"
           />
+          {error && <p className="text-sm text-error-500 mt-2">{error}</p>}
           <div className="flex gap-2 mt-4">
             <button
               type="button"

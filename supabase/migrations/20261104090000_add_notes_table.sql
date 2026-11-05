@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS notes (
   note_date date NOT NULL,
   content text NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(user_id, note_date)
 );
 
 CREATE INDEX IF NOT EXISTS notes_user_date_idx ON notes(user_id, note_date);
