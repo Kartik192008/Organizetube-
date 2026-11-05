@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import AddCourseModal from '@/components/AddCourseModal';
 import CourseCard from '@/components/CourseCard';
 import DonationSection from '@/components/DonationSection';
 import StatsStrip from '@/components/StatsStrip';
+import { fetchNotes } from '@/lib/notes';
 import type { CourseProgress, LibraryStats } from '@/lib/stats';
 import type { CourseRow } from '@/types/library';
+import type { NoteRow } from '@/types/notes';
 
 type DashboardViewProps = {
   courses: CourseRow[];
@@ -27,6 +29,21 @@ export default function DashboardView({
   userId,
 }: DashboardViewProps) {
   const [addOpen, setAddOpen] = useState(false);
+  const [todayNote, setTodayNote] = useState<NoteRow | null>(null);
+
+  useEffect(() => {
+    const loadTodayNote = async () => {
+      try {
+        const notes = await fetchNotes();
+        const today = new Date().toISOString().split('T')[0];
+        const note = notes.find((n) => n.note_date === today);
+        setTodayNote(note || null);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    loadTodayNote();
+  }, [userId]);
 
   const handleSaved = async () => {
     setAddOpen(false);
@@ -36,6 +53,15 @@ export default function DashboardView({
   return (
     <div className="animate-fade-up">
       <StatsStrip stats={stats} />
+
+      {todayNote && (
+        <div className="mt-6 border-2 border-accent-500 bg-accent-50 p-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-accent-600 mb-1">
+            Today's Note
+          </div>
+          <div className="text-sm text-primary-900 whitespace-pre-wrap">{todayNote.content}</div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-4 py-8 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-1">
