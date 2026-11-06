@@ -32,10 +32,12 @@ export default function DashboardView({
   const [todayNote, setTodayNote] = useState<NoteRow | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const loadTodayNote = async () => {
       try {
         const notes = await fetchNotes();
-        const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+        if (cancelled) return;
+        const today = new Date().toLocaleDateString('en-CA');
         const note = notes.find((n) => n.note_date === today);
         setTodayNote(note || null);
       } catch (err) {
@@ -43,6 +45,7 @@ export default function DashboardView({
       }
     };
     loadTodayNote();
+    return () => { cancelled = true; };
   }, [userId]);
 
   const handleSaved = async () => {
