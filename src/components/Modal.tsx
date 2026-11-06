@@ -22,18 +22,23 @@ export default function Modal({ title, onClose, children }: ModalProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-start justify-center overflow-y-auto p-4 pt-10">
+    <div
+      className="fixed inset-0 z-[999999] flex items-start justify-center overflow-y-auto p-4 pt-10"
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999999 }}
+    >
       <button
         type="button"
         aria-label="Close"
         onClick={onClose}
         className="fixed inset-0 bg-black/40"
+        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative z-[100000] w-full max-w-lg max-h-[85vh] flex flex-col my-8 animate-pop-in border-2 border-primary-900 bg-surface shadow-2xl"
+        className="relative w-full max-w-lg max-h-[85vh] flex flex-col my-8 border-2 border-primary-900 bg-surface shadow-2xl"
+        style={{ zIndex: 1000000, position: 'relative' }}
       >
         <div className="flex items-center justify-between border-b-2 border-primary-900 px-6 py-4">
           <h2 id="modal-title" className="text-3xl text-primary-900">
