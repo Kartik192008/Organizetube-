@@ -40,12 +40,14 @@ export default function DashboardView({
         const today = new Date().toLocaleDateString('en-CA');
         const note = notes.find((n) => n.note_date === today);
         setTodayNote(note || null);
-      } catch (err) {
+      } catch {
         // Silently fail - notes table might not exist yet
-        console.warn('Could not load today note:', err);
       }
     };
-    loadTodayNote();
+    // Don't block rendering
+    setTimeout(() => {
+      if (!cancelled) loadTodayNote();
+    }, 0);
     return () => { cancelled = true; };
   }, [userId]);
 
