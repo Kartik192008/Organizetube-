@@ -41,7 +41,8 @@ export default function DashboardView({
         const note = notes.find((n) => n.note_date === today);
         setTodayNote(note || null);
       } catch (err) {
-        console.error(err);
+        // Silently fail - notes table might not exist yet
+        console.warn('Could not load today note:', err);
       }
     };
     loadTodayNote();
