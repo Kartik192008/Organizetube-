@@ -64,6 +64,8 @@ export default function AddCourseModal({ onClose, onSaved, userId }: AddCourseMo
             </span>
             <input
               type="url"
+              id="youtube-url"
+              name="youtube-url"
               required
               value={url}
               onChange={(event) => setUrl(event.target.value)}
