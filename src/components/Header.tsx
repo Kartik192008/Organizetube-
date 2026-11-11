@@ -1,4 +1,4 @@
-import { Search, LogOut, Calendar } from 'lucide-react';
+import { Search, LogOut, Calendar, Target, School } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 type HeaderProps = {
@@ -8,9 +8,11 @@ type HeaderProps = {
   user: { email?: string | null; user_metadata?: { full_name?: string | null; avatar_url?: string | null } } | null;
   onSignOut: () => void;
   onCalendar: () => void;
+  onOkSchool: () => void;
+  onSeason: () => void;
 };
 
-export default function Header({ query, onQueryChange, onHome, user, onSignOut, onCalendar }: HeaderProps) {
+export default function Header({ query, onQueryChange, onHome, user, onSignOut, onCalendar, onOkSchool, onSeason }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-primary-200 bg-surface/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -42,6 +44,22 @@ export default function Header({ query, onQueryChange, onHome, user, onSignOut, 
             >
               <Calendar className="h-4 w-4" />
               Calendar
+            </button>
+            <button
+              type="button"
+              onClick={onSeason}
+              className="flex items-center gap-1 text-sm font-semibold text-primary-600 transition-colors hover:text-primary-900"
+            >
+              <Target className="h-4 w-4" />
+              Season
+            </button>
+            <button
+              type="button"
+              onClick={onOkSchool}
+              className="flex items-center gap-1 text-sm font-semibold text-primary-600 transition-colors hover:text-primary-900"
+            >
+              <School className="h-4 w-4" />
+              OkSchool
             </button>
           </nav>
         </div>

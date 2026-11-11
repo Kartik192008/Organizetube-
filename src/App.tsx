@@ -8,6 +8,9 @@ import ErrorNotice from '@/components/ErrorNotice';
 import Header from '@/components/Header';
 import LessonWatchView from '@/components/LessonWatchView';
 import LoginView from '@/components/LoginView';
+import OkSchoolView from '@/components/OkSchoolView';
+import SeasonDetails from '@/components/SeasonDetails';
+import SeasonsView from '@/components/SeasonsView';
 import { useLibrary } from '@/hooks/useLibrary';
 import { useAuth } from '@/hooks/useAuth';
 import { computeStats, courseProgress, groupLessonsByCourse } from '@/lib/stats';
@@ -18,7 +21,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const [view, setView] = useState<'dashboard' | 'calendar'>('dashboard');
+  const [view, setView] = useState<'dashboard' | 'calendar' | 'okschool' | 'season' | 'seasonDetails'>('dashboard');
 
   const userId = user?.id ?? null;
 
@@ -57,6 +60,24 @@ export default function App() {
     setView('calendar');
   };
 
+  const goOkSchool = () => {
+    setSelectedId(null);
+    setSelectedLessonId(null);
+    setView('okschool');
+  };
+
+  const goSeason = () => {
+    setSelectedId(null);
+    setSelectedLessonId(null);
+    setView('season');
+  };
+
+  const goSeasonDetails = () => {
+    setSelectedId(null);
+    setSelectedLessonId(null);
+    setView('seasonDetails');
+  };
+
   const handleQueryChange = (value: string) => {
     setQuery(value);
     goHome();
@@ -90,6 +111,8 @@ export default function App() {
         onQueryChange={handleQueryChange}
         onHome={goHome}
         onCalendar={goCalendar}
+        onOkSchool={goOkSchool}
+        onSeason={goSeason}
         user={user}
         onSignOut={signOut}
       />
@@ -97,6 +120,22 @@ export default function App() {
       <main className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         {view === 'calendar' ? (
           <CalendarView userId={userId} onBack={goHome} />
+        ) : view === 'okschool' ? (
+          <OkSchoolView onBack={goHome} />
+        ) : view === 'season' ? (
+          <SeasonsView
+            userId={userId}
+            courses={data?.courses ?? []}
+            lessons={data?.lessons ?? []}
+            onBack={goHome}
+          />
+        ) : view === 'seasonDetails' ? (
+          <SeasonDetails
+            userId={userId}
+            courses={data?.courses ?? []}
+            lessons={data?.lessons ?? []}
+            onBack={goHome}
+          />
         ) : (
           <>
             {status === 'loading' && (
@@ -153,9 +192,11 @@ export default function App() {
                 totalCourses={data.courses.length}
                 progressByCourse={derived.progressByCourse}
                 stats={derived.stats}
+                lessons={data.lessons}
                 onOpenCourse={setSelectedId}
                 onCourseSaved={refresh}
                 userId={userId}
+                onViewDetails={goSeasonDetails}
               />
             )}
           </>

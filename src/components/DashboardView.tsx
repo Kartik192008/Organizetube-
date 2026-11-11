@@ -3,10 +3,11 @@ import { Plus } from 'lucide-react';
 import AddCourseModal from '@/components/AddCourseModal';
 import CourseCard from '@/components/CourseCard';
 import DonationSection from '@/components/DonationSection';
+import SeasonOverview from '@/components/SeasonOverview';
 import StatsStrip from '@/components/StatsStrip';
 import { fetchNotes } from '@/lib/notes';
 import type { CourseProgress, LibraryStats } from '@/lib/stats';
-import type { CourseRow } from '@/types/library';
+import type { CourseRow, LessonRow } from '@/types/library';
 import type { NoteRow } from '@/types/notes';
 
 type DashboardViewProps = {
@@ -14,9 +15,11 @@ type DashboardViewProps = {
   totalCourses: number;
   progressByCourse: Map<string, CourseProgress>;
   stats: LibraryStats;
+  lessons: LessonRow[];
   onOpenCourse: (courseId: string) => void;
   onCourseSaved: () => Promise<void>;
   userId: string | null;
+  onViewDetails: () => void;
 };
 
 export default function DashboardView({
@@ -24,9 +27,11 @@ export default function DashboardView({
   totalCourses,
   progressByCourse,
   stats,
+  lessons,
   onOpenCourse,
   onCourseSaved,
   userId,
+  onViewDetails,
 }: DashboardViewProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [todayNote, setTodayNote] = useState<NoteRow | null>(null);
@@ -59,6 +64,12 @@ export default function DashboardView({
   return (
     <div className="animate-fade-up">
       <StatsStrip stats={stats} />
+
+      <SeasonOverview
+        userId={userId}
+        lessons={lessons}
+        onViewDetails={onViewDetails}
+      />
 
       {todayNote && (
         <div className="mt-6 border-2 border-accent-500 bg-accent-50 p-4">
