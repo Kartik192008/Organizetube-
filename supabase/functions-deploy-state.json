@@ -1,0 +1,9 @@
+{
+  "projectId": "72869406",
+  "functions": {
+    "telegram-proxy": {
+      "hasChanged": false,
+      "hash": "e8035bc6f083ed495c4afc51aac4553e8d4906a613c22e289f69afe772af508b"
+    }
+  }
+}
